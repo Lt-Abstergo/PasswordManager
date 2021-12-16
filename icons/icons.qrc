@@ -1,0 +1,41 @@
+<RCC>
+  <qresource prefix="add">
+    <file>add.svg</file>
+  </qresource>
+  <qresource prefix="bandr">
+    <file>Backup And restore.svg</file>
+  </qresource>
+  <qresource prefix="hamburger">
+    <file>Hamburger.svg</file>
+  </qresource>
+  <qresource prefix="hidden">
+    <file>Hidden.svg</file>
+  </qresource>
+  <qresource prefix="logo">
+    <file>Logo.svg</file>
+  </qresource>
+  <qresource prefix="minimize">
+    <file>Minimize.svg</file>
+  </qresource>
+  <qresource prefix="plain">
+    <file>plain.svg</file>
+  </qresource>
+  <qresource prefix="search">
+    <file>Search.svg</file>
+  </qresource>
+  <qresource prefix="select">
+    <file>Select.svg</file>
+  </qresource>
+  <qresource prefix="sync">
+    <file>Sync.svg</file>
+  </qresource>
+  <qresource prefix="close">
+    <file>Close.svg</file>
+  </qresource>
+  <qresource prefix="external">
+    <file>External_option.svg</file>
+  </qresource>
+  <qresource prefix="generate">
+    <file>Generate.svg</file>
+  </qresource>
+</RCC>
