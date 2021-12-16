@@ -1,5 +1,6 @@
 import ast
 import csv
+import os.path
 from datetime import datetime as time
 from urllib.parse import urlparse as parse
 
@@ -8,14 +9,14 @@ import DatabaseHandler as dbH
 
 
 class BusinessHandler:
-    __doc__ = """Handles Business logic for the object"""
+    """Handles Business logic for the object"""
     __public_key: str
     database_name: str
 
     def __init__(self, pkey):
-        self.database_name = "pass_man.db"
+        self.database_name = '.\cache\pass_man.db'
         self.__public_key = pkey
-        if not dbH.table_exists(self.database_name):
+        if not os.path.isfile(self.database_name):
             dbH.create_table(self.database_name)
 
     def __get_public_key(self) -> str:

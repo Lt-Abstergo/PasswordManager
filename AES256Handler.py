@@ -3,7 +3,6 @@
 import base64
 import hashlib
 import os
-import ast
 from Crypto import Random
 from Crypto.Cipher import AES
 
