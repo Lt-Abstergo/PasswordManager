@@ -2,6 +2,18 @@
   <qresource prefix="add">
     <file>add.svg</file>
   </qresource>
+  <qresource prefix="uparrow">
+    <file>up_arrow.svg</file>
+  </qresource>
+  <qresource prefix="downarrow">
+    <file>down_arrow.svg</file>
+  </qresource>
+  <qresource prefix="toggle_on">
+    <file>toggle_on.svg</file>
+  </qresource>
+  <qresource prefix="toggle_off">
+    <file>toggle_off.svg</file>
+  </qresource>
   <qresource prefix="bandr">
     <file>Backup And restore.svg</file>
   </qresource>

@@ -45,27 +45,3 @@ def decrypt(enc_dict, password):
     decrypted = cipher.decrypt(enc)
     original = un_pad(decrypted)
     return original.decode()
-
-
-# def main():
-#     password = "password"
-#
-#     in_str = "3v9PP@E9"
-#     encrypted = encrypt(in_str, password)
-#     print(encrypted.items())
-#     print(encrypted)
-#     enc_string = str(encrypted)
-#     print(enc_string)
-#     enc_tuple = ast.literal_eval(enc_string)
-#     print(enc_tuple)
-#
-#     # dump1 = dict_to_binary(encrypted)
-#     # print(dump1)
-#     # print(binary_to_dict(dump1))
-#
-#     decrypted = decrypt(enc_tuple, password)
-#     print(decrypted)
-#     # print(bytes.decode(decrypted))
-#
-#
-# main()
