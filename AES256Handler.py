@@ -44,4 +44,8 @@ def decrypt(enc_dict, password):
     cipher = AES.new(private_key, AES.MODE_CBC, iv)
     decrypted = cipher.decrypt(enc)
     original = un_pad(decrypted)
-    return original.decode()
+    try:
+        ret_val = original.decode()
+        return ret_val
+    except UnicodeDecodeError:
+        return 0

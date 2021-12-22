@@ -134,6 +134,19 @@ def show_all(dbname, user):
         print_file(error_handler(error))
 
 
+def save_to_disk_helper(dbname, user):
+    try:
+        conn = sqlite3.connect(dbname)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, url,username,password FROM login_details WHERE u_name=(?);", (user,))
+        items = cursor.fetchall()
+        conn.commit()
+        conn.close()
+        return items
+    except sqlite3.Error as error:
+        print_file(error_handler(error))
+
+
 def login_count(dbname, user):
     try:
         conn = sqlite3.connect(dbname)
@@ -235,6 +248,7 @@ def show_one(dbname, rowid):
         print_file(error_handler(error))
 
 
+
 def print_file(str_input):
     print(str_input)
 
@@ -286,5 +300,18 @@ def update_entry_title(dbname, rowid, name, url):
                        (name, url, rowid,))
         conn.commit()
         conn.close()
+    except sqlite3.Error as error:
+        print_file(error_handler(error))
+
+
+def search(dbname, search_key):
+    try:
+        conn = sqlite3.connect(dbname)
+        cursor = conn.cursor()
+        cursor.execute("SELECT rowid, name, use_date FROM login_details WHERE url LIKE ?", ('%' + search_key + '%',))
+        items = cursor.fetchall()
+        conn.commit()
+        conn.close()
+        return items
     except sqlite3.Error as error:
         print_file(error_handler(error))

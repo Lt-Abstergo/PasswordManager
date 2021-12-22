@@ -1,11 +1,9 @@
 import sys
 
-from PyQt6 import QtWidgets, QtGui, QtCore
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
 import businesshandler as bh
-
+import databasehandler
 from ui_app import *
 
 
@@ -27,12 +25,15 @@ class MainWindow(QMainWindow):
         self.ui.b_pwToggle.clicked.connect(lambda: self.toggle_pass_handler(self.ui.b_pwToggle, self.ui.tb_mkey))
         self.ui.b_pwToggle_2.clicked.connect(lambda: self.toggle_pass_handler(self.ui.b_pwToggle_2, self.ui.tb_mkey_2))
         self.ui.b_pwToggle_3.clicked.connect(lambda: self.toggle_pass_handler(self.ui.b_pwToggle_3, self.ui.tb_mkey_3))
+        self.ui.b_search.clicked.connect(self.search_entry)
         self.ui.b_bandr_restore.clicked.connect(self.extract_backup)
         self.ui.n_newUser_2.clicked.connect(self.add_new_user)
         self.ui.b_login.clicked.connect(self.onclick_b_login)
         self.ui.b_gen_generate_now.clicked.connect(self.gen_password)
         self.ui.b_add_newa_dd.clicked.connect(self.add_new_login)
         self.ui.file_browser.clicked.connect(self.open_file_browser)
+        self.ui.file_browser_3.clicked.connect(self.select_directory)
+        self.ui.b_band_backup.clicked.connect(self.write_backup)
         self.show()
 
     def toggle_pass_handler(self, toggle_btn, textbox):
@@ -54,13 +55,15 @@ class MainWindow(QMainWindow):
         elif len(pw) == 0:
             self.set_l_info("Password cant be empty")
         else:
-            try:
+            check = bh.check_init_user(uname, pw)
+            if check == 0:
+                self.set_l_info("User not found")
+            elif check == 1:
                 self.__user = bh.BusinessHandler(u_name=uname, m_key=pw)
                 self.set_l_info("Login Success")
                 self.show_mainpage()
-            except bh.WrongCredentialsException or IndexError or UnicodeDecodeError as error:
+            else:
                 self.set_l_info("Wrong Credentials: Please recheck your Credentials")
-                print(error)
 
     def add_new_user(self):
         try:
@@ -81,6 +84,7 @@ class MainWindow(QMainWindow):
 
         pwd = bh.generate_pass(length=length, cap=cap, numeric=num, symbol=sym)
         self.ui.textEdit_2.setText(pwd)
+        self.ui.textEdit_2.setAlignment(Qt.AlignmentFlag.AlignRight)
 
     def add_new_login(self):
         title = self.ui.tb_add_new_title.toPlainText()
@@ -100,18 +104,27 @@ class MainWindow(QMainWindow):
         filter = "CSV files(*.csv)"
         f_loc = dlg.getOpenFileName(dlg, caption="Select Backup File", filter=filter)
         self.ui.label_3.setText(f_loc[0])
-        print(f_loc[0])
 
     def extract_backup(self):
-        self.ui.l
+        self.ui.l_backup.setText("Restoring the backup: Please wait")
         if self.__user is not None:
             if self.ui.b_bandr_pman_toggle.isChecked():
                 self.__user.extract_backup(self.ui.label_3.text(), False)
             else:
                 self.__user.extract_backup(self.ui.label_3.text())
+        self.ui.l_backup.setText("Restoration Completed")
+
+    def write_backup(self):
+        self.ui.l_restore.setText("Starting the backup: Please wait")
+        self.__user.save_to_disk(self.ui.l_bandr_b1.text())
+        self.ui.l_restore.setText("Backup saved")
+
+    def select_directory(self):
+        dlg = QFileDialog.getExistingDirectory(caption="Choose a directory")
+        self.ui.l_bandr_b1.setText(dlg)
 
     def setup_generate(self):
-        self.ui.textEdit_2.setText(bh.generate_pass())
+        self.gen_password()
         self.ui.stackedWidget_main.setCurrentWidget(self.ui.new_password)
 
     def show_mainpage(self):
@@ -122,14 +135,19 @@ class MainWindow(QMainWindow):
         self.show_items()
         self.ui.stackedWidget_main.setCurrentWidget(self.ui.all_items)
 
-    def show_items(self):
+    def show_items(self, flag=True, in_items=None):
         if self.__user is not None:
-            items = self.__user.show_all()
-            self.ui.tableWidget.setRowCount(self.__user.get_login_count())
+            # items = None
+            if flag:
+                items = self.__user.show_all()
+            else:
+                items = in_items
+            self.ui.tableWidget.setRowCount(len(items))
             tb_row = 0
             for item in items:
                 self.ui.tableWidget.setItem(tb_row, 0, QtWidgets.QTableWidgetItem(item[1]))
-                self.ui.tableWidget.setItem(tb_row, 1, QtWidgets.QTableWidgetItem(item[2]))
+                self.ui.tableWidget.setItem(tb_row, 1,
+                                            QtWidgets.QTableWidgetItem(self.__user.time_delta_calc(item[2])))
                 button = ButtonWidgetRow(item[0])
                 self.ui.tableWidget.setCellWidget(tb_row, 2, button)
                 button.clicked.connect(lambda: self.wb_handler())
@@ -194,6 +212,11 @@ class MainWindow(QMainWindow):
             mkey = self.__user.encrypt_data(__un_key)
             self.__user.update_entry(rowid, title, url, uname, mkey)
             self.ui.l_info.setText("Entry updated")
+
+    def search_entry(self):
+        term = self.ui.tb_search.toPlainText()
+        item = self.__user.search_items(term)
+        self.show_items(flag=False, in_items=item)
 
 
 if __name__ == "__main__":

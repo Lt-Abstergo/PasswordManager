@@ -1,14 +1,14 @@
+import math
 import random
-import sqlite3
 import string
 from urllib.parse import urlparse as parse
 import ast
 import os
 import csv
 
-import AES256Handler
 import databasehandler as dbh
 import AES256Handler as encH
+from datetime import datetime as time
 
 
 class BusinessHandlerException(Exception):
@@ -39,6 +39,19 @@ def generate_pass(length: int = 8, cap: bool = True, numeric: bool = True, symbo
     for i in range(length):
         pwd += random.choice(all)
     return pwd
+
+
+def check_init_user(username, passkey) -> int:
+    item = dbh.check_user("./cache/users/users.db", username)
+    if item is None:
+        return 0
+    else:
+        enc_tuple = ast.literal_eval(item[2])
+        check = encH.decrypt(enc_tuple, password=passkey)
+        if check == passkey:
+            return 1
+        elif check == 0:
+            return 2
 
 
 class BusinessHandler:
@@ -124,7 +137,7 @@ class BusinessHandler:
                         if flag:
                             self.add_new_login(url, username, password, name)
                         else:
-                            self.add_new_login(url, username, password, name,flag=flag)
+                            self.add_new_login(url, username, password, name, flag=flag)
 
         except OSError as error:
             dbh.error_handler(error)
@@ -162,5 +175,46 @@ class BusinessHandler:
     def time_update(self, rowid):
         dbh.update_time(self.__USER_DB, rowid)
 
-    def save_to_disk(self, source):
-        pass
+    def save_to_disk(self, destination):
+        fileName = "Pman_backup"
+        date = time.now()
+        dest = destination + "/" + fileName + date.strftime("%d%m%y%H%M") + ".csv"
+        items = dbh.save_to_disk_helper(self.__USER_DB, self.user_name)
+        try:
+            with open(dest, "w+", newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(["name", "url", "username", "password"])
+                for item in items:
+                    writer.writerow(item)
+            file.close()
+        except OSError as error:
+            dbh.print_file(dbh.error_handler(error))
+
+    def time_delta_calc(self, last_used):
+        cur_time = time.now()
+        last_used = time.fromisoformat(last_used)
+        delta = cur_time - last_used
+        if delta.days > 365:
+            passed = math.floor(delta.days / 30)
+            return "Over " + str(passed) + " years ago"
+        elif delta.days > 30:
+            passed = math.floor(delta.days / 30)
+            return "Over " + str(passed) + " months ago"
+        elif delta.days > 1:
+            passed = math.floor(delta.days / 30)
+            return "Over " + str(passed) + " days ago"
+        else:
+            if delta.seconds > 3600:
+                passed = math.floor(delta.seconds / 3600)
+                if passed > 1:
+                    return "Over " + str(passed) + " hours ago"
+                else:
+                    return "Over an hour ago"
+            elif delta.seconds > 60:
+                passed = math.floor(delta.seconds / 60)
+                return "Over " + str(passed) + " minutes ago"
+            else:
+                return "Over " + str(delta.seconds) + " minutes ago"
+
+    def search_items(self, search_key):
+        return dbh.search(self.__USER_DB, search_key)
