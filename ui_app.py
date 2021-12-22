@@ -765,7 +765,6 @@ class UiMainWindow(object):
                                        "    background-color: rgb(37, 37, 37);\n"
                                        "    alternate-background-color: rgb(37, 42, 37);\n"
                                        "    selection-background-color: rgba(170, 255, 127,30);\n"
-                                       "    grid-line:2px solid  rgb(114, 174, 116);\n"
                                        "    color:rgb(114, 174, 116);\n"
                                        "}QHeaderView::section{\n"
                                        "    background-color:rgb(39, 37, 37);\n"
@@ -817,15 +816,6 @@ class UiMainWindow(object):
         self.tableWidget.setGridStyle(QtCore.Qt.PenStyle.DashDotLine)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(3)
-        self.tableWidget.setRowCount(4)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(3, item)
         self.tableWidget.setColumnWidth(0, 340)
         self.tableWidget.setColumnWidth(1, 300)
         self.tableWidget.setColumnWidth(2, 70)
@@ -1817,10 +1807,10 @@ class UiMainWindow(object):
         self.stackedWidget_main.setCurrentIndex(0)
         self.b_close.clicked.connect(MainWindow.close)
         self.b_close_2.clicked.connect(MainWindow.close)
-        self.b_minimize.clicked.connect(MainWindow.hide)
-        self.b_minimize_2.clicked.connect(MainWindow.hide)
         self.b_close_3.clicked.connect(MainWindow.close)
-        self.b_minimize_3.clicked.connect(MainWindow.hide)
+        self.b_minimize.clicked.connect(lambda: MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMinimized))
+        self.b_minimize_2.clicked.connect(lambda: MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMinimized))
+        self.b_minimize_3.clicked.connect(lambda: MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMinimized))
         self.h_slider.valueChanged['int'].connect(self.length_slider.setNum)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -1888,7 +1878,8 @@ class UiMainWindow(object):
         self.label_14.setText(_translate("MainWindow", "Password           :"))
         self.tb_mkey_3.setPlaceholderText(_translate("MainWindow", "Enter Your Password"))
         self.b_add_newa_dd.setText(_translate("MainWindow", "Add "))
-        self.label.setText(_translate("MainWindow", "I dont know How I would do google Authentication Yet"))
+        self.label.setText(
+            _translate("MainWindow", "Daily Google drive or onedrive or dropbox backup support is coming soon"))
         self.label_4.setText(_translate("MainWindow", "Import a backup from web browsers or previous backups"))
         self.label_3.setText(_translate("MainWindow", "Browse Directory"))
         self.file_browser.setText(_translate("MainWindow", "Browse"))

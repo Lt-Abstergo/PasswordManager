@@ -211,7 +211,7 @@ def table_exists(dbname, table_name) -> bool:
         cursor = conn.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?;", (table_name,))
         items = cursor.fetchone()
-        if items.__contains__(table_name):
+        if items is not None:
             return True
         conn.commit()
         conn.close()

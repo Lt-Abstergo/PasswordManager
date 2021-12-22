@@ -1,9 +1,8 @@
 import sys
-
 from PyQt6.QtCore import *
+from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWidgets import *
 import businesshandler as bh
-import databasehandler
 from ui_app import *
 
 
@@ -25,6 +24,7 @@ class MainWindow(QMainWindow):
         self.ui.b_pwToggle.clicked.connect(lambda: self.toggle_pass_handler(self.ui.b_pwToggle, self.ui.tb_mkey))
         self.ui.b_pwToggle_2.clicked.connect(lambda: self.toggle_pass_handler(self.ui.b_pwToggle_2, self.ui.tb_mkey_2))
         self.ui.b_pwToggle_3.clicked.connect(lambda: self.toggle_pass_handler(self.ui.b_pwToggle_3, self.ui.tb_mkey_3))
+        self.ui.b_ex_open.clicked.connect(self.open_browser)
         self.ui.b_search.clicked.connect(self.search_entry)
         self.ui.b_bandr_restore.clicked.connect(self.extract_backup)
         self.ui.n_newUser_2.clicked.connect(self.add_new_user)
@@ -142,23 +142,25 @@ class MainWindow(QMainWindow):
                 items = self.__user.show_all()
             else:
                 items = in_items
-            self.ui.tableWidget.setRowCount(len(items))
-            tb_row = 0
-            for item in items:
-                self.ui.tableWidget.setItem(tb_row, 0, QtWidgets.QTableWidgetItem(item[1]))
-                self.ui.tableWidget.setItem(tb_row, 1,
-                                            QtWidgets.QTableWidgetItem(self.__user.time_delta_calc(item[2])))
-                button = ButtonWidgetRow(item[0])
-                self.ui.tableWidget.setCellWidget(tb_row, 2, button)
-                button.clicked.connect(lambda: self.wb_handler())
-                tb_row += 1
+            if items is not None:
+                self.ui.tableWidget.setRowCount(len(items))
+                tb_row = 0
+                for item in items:
+                    self.ui.tableWidget.setItem(tb_row, 0, QtWidgets.QTableWidgetItem(item[1]))
+                    self.ui.tableWidget.setItem(tb_row, 1,
+                                                QtWidgets.QTableWidgetItem(self.__user.time_delta_calc(item[2])))
+                    button = ButtonWidgetRow(item[0])
+                    self.ui.tableWidget.setCellWidget(tb_row, 2, button)
+                    button.clicked.connect(lambda: self.wb_handler())
+                    tb_row += 1
         else:
             print("User not initiated")
 
-    def wb_handler(self):
+    def wb_handler(self, ):
         button = self.sender()
         if not button:
             return
+
         self.show_detail(button.rowID)
 
     def show_detail(self, rowid):
@@ -217,6 +219,10 @@ class MainWindow(QMainWindow):
         term = self.ui.tb_search.toPlainText()
         item = self.__user.search_items(term)
         self.show_items(flag=False, in_items=item)
+
+    def open_browser(self):
+        url = self.ui.l_url_info.text()
+        QDesktopServices.openUrl(QUrl(url))
 
 
 if __name__ == "__main__":

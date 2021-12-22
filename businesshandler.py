@@ -42,7 +42,8 @@ def generate_pass(length: int = 8, cap: bool = True, numeric: bool = True, symbo
 
 
 def check_init_user(username, passkey) -> int:
-    item = dbh.check_user("./cache/users/users.db", username)
+    __USER_DB = os.getenv('LOCALAPPDATA') + "\\Pman\\" + "users.db"
+    item = dbh.check_user(__USER_DB, username)
     if item is None:
         return 0
     else:
@@ -55,7 +56,8 @@ def check_init_user(username, passkey) -> int:
 
 
 class BusinessHandler:
-    __DB_LOC = "./cache/users/"
+    __APP_DATA_DIR = os.getenv('LOCALAPPDATA')
+    __DB_LOC = __APP_DATA_DIR + "\\Pman\\"
     __USER_DB = __DB_LOC + "users.db"
     __USERTBN = "users"
     __LGNTBN = "login_details"
@@ -86,14 +88,13 @@ class BusinessHandler:
         return self.user_name
 
     def base_init(self):
-        if not os.path.isfile(self.__USER_DB):
+        if not os.path.exists(self.__DB_LOC):
+            os.mkdir(self.__DB_LOC)
+
+        if not dbh.table_exists(self.__USER_DB, self.__USERTBN):
             dbh.create_user_table(self.__USER_DB)
+        if not dbh.table_exists(self.__USER_DB, self.__LGNTBN):
             dbh.create_login_table(self.__USER_DB)
-        else:
-            if not dbh.table_exists(self.__USER_DB, self.__USERTBN):
-                dbh.create_user_table(self.__USER_DB)
-            if not dbh.table_exists(self.__USER_DB, self.__LGNTBN):
-                dbh.create_login_table(self.__USER_DB)
 
     def create_new_user(self, u_name: str, u_email: str, m_key: str):
         enc_mKey = self.encrypt_data(m_key)
@@ -107,7 +108,7 @@ class BusinessHandler:
                 return int(item[4])
             return -1
         except IndexError as c:
-            dbh.print_file("I failed", c)
+            dbh.print_file("I failed")
 
     def get_user(self, rowid):
         return dbh.get_user(self.__USER_DB, str(rowid))
@@ -200,9 +201,10 @@ class BusinessHandler:
         elif delta.days > 30:
             passed = math.floor(delta.days / 30)
             return "Over " + str(passed) + " months ago"
+        elif delta.days > 2:
+            return "Over " + str(delta.days) + " days ago"
         elif delta.days > 1:
-            passed = math.floor(delta.days / 30)
-            return "Over " + str(passed) + " days ago"
+            return "Over a day ago"
         else:
             if delta.seconds > 3600:
                 passed = math.floor(delta.seconds / 3600)
@@ -210,11 +212,13 @@ class BusinessHandler:
                     return "Over " + str(passed) + " hours ago"
                 else:
                     return "Over an hour ago"
-            elif delta.seconds > 60:
+            elif delta.seconds > 120:
                 passed = math.floor(delta.seconds / 60)
                 return "Over " + str(passed) + " minutes ago"
+            elif delta.seconds > 60:
+                return "Over a minute ago"
             else:
-                return "Over " + str(delta.seconds) + " minutes ago"
+                return str(delta.seconds) + " seconds ago"
 
     def search_items(self, search_key):
         return dbh.search(self.__USER_DB, search_key)
