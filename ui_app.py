@@ -1,4 +1,3 @@
-import sys
 import icons.rc_icons
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -43,6 +42,7 @@ class UiMainWindow(object):
         icon.addPixmap(QtGui.QPixmap(":/logo/Logo.svg"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setStyleSheet("background-color: rgba(39, 37, 37, 240)")
+        MainWindow.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -152,7 +152,8 @@ class UiMainWindow(object):
                                        "}")
         self.tb_username.setInputMask("")
         self.tb_username.setEchoMode(QtWidgets.QLineEdit.EchoMode.Normal)
-        self.tb_username.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.tb_username.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
         self.tb_username.setClearButtonEnabled(True)
         self.tb_username.setObjectName("tb_username")
         self.verticalLayout_3.addWidget(self.tb_username)
@@ -1201,17 +1202,17 @@ class UiMainWindow(object):
         self.verticalLayout_19.addLayout(self.horizontalLayout_20)
         self.horizontalLayout_25 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_25.setObjectName("horizontalLayout_25")
-        self.label_5 = QtWidgets.QLabel(self.bandr)
+        self.l_backup = QtWidgets.QLabel(self.bandr)
         font = QtGui.QFont()
         font.setPointSize(15)
-        self.label_5.setFont(font)
-        self.label_5.setStyleSheet("border: 2 px solid rgb(56, 102, 84);\n"
-                                   "border-bottom: 2 px solid rgb(56, 102, 84);\n"
-                                   "color: rgba(170, 255, 127,190);\n"
-                                   "")
-        self.label_5.setText("")
-        self.label_5.setObjectName("label_5")
-        self.horizontalLayout_25.addWidget(self.label_5)
+        self.l_backup.setFont(font)
+        self.l_backup.setStyleSheet("border: 2 px solid rgb(56, 102, 84);\n"
+                                    "border-bottom: 2 px solid rgb(56, 102, 84);\n"
+                                    "color: rgba(170, 255, 127,190);\n"
+                                    "")
+        self.l_backup.setText("")
+        self.l_backup.setObjectName("label_5")
+        self.horizontalLayout_25.addWidget(self.l_backup)
         self.b_bandr_restore = QtWidgets.QPushButton(self.bandr)
         self.b_bandr_restore.setMinimumSize(QtCore.QSize(120, 40))
         self.b_bandr_restore.setMaximumSize(QtCore.QSize(120, 40))
@@ -1219,15 +1220,15 @@ class UiMainWindow(object):
         font.setPointSize(15)
         self.b_bandr_restore.setFont(font)
         self.b_bandr_restore.setStyleSheet("QPushButton{\n"
-                                          "    border:2px solid #0C8040;\n"
-                                          "    border-radius: 15px;\n"
-                                          "    color: #72AE74\n"
-                                          "}QPushButton:hover{\n"
-                                          "    color: rgba(170, 255, 127,255);\n"
-                                          "    border-color: black;\n"
-                                          "}QPushButton:pressed{\n"
-                                          "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(56, 102, 84, 180), stop: 1 rgba(56, 102, 84, 140));\n"
-                                          "}")
+                                           "    border:2px solid #0C8040;\n"
+                                           "    border-radius: 15px;\n"
+                                           "    color: #72AE74\n"
+                                           "}QPushButton:hover{\n"
+                                           "    color: rgba(170, 255, 127,255);\n"
+                                           "    border-color: black;\n"
+                                           "}QPushButton:pressed{\n"
+                                           "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(56, 102, 84, 180), stop: 1 rgba(56, 102, 84, 140));\n"
+                                           "}")
         self.b_bandr_restore.setObjectName("file_browser_2")
         self.horizontalLayout_25.addWidget(self.b_bandr_restore)
         self.verticalLayout_19.addLayout(self.horizontalLayout_25)
@@ -1282,13 +1283,13 @@ class UiMainWindow(object):
         self.verticalLayout_19.addLayout(self.horizontalLayout_18)
         self.horizontalLayout_26 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_26.setObjectName("horizontalLayout_26")
-        self.label_16 = QtWidgets.QLabel(self.bandr)
+        self.l_restore = QtWidgets.QLabel(self.bandr)
         font = QtGui.QFont()
         font.setPointSize(15)
-        self.label_16.setFont(font)
-        self.label_16.setText("")
-        self.label_16.setObjectName("label_16")
-        self.horizontalLayout_26.addWidget(self.label_16)
+        self.l_restore.setFont(font)
+        self.l_restore.setText("")
+        self.l_restore.setObjectName("label_16")
+        self.horizontalLayout_26.addWidget(self.l_restore)
         self.b_band_backup = QtWidgets.QPushButton(self.bandr)
         self.b_band_backup.setMinimumSize(QtCore.QSize(120, 40))
         self.b_band_backup.setMaximumSize(QtCore.QSize(120, 40))
@@ -1330,9 +1331,15 @@ class UiMainWindow(object):
         self.textEdit_2.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.textEdit_2.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.textEdit_2.setUndoRedoEnabled(False)
-        self.textEdit_2.setLineWrapMode(QtWidgets.QTextEdit.LineWrapMode.WidgetWidth)
+        self.textEdit_2.setLineWrapMode(QtWidgets.QTextEdit.LineWrapMode.FixedColumnWidth)
+        self.textEdit_2.setLineWrapColumnOrWidth(700)
         self.textEdit_2.setReadOnly(True)
+        self.textEdit_2.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight)
         self.textEdit_2.setObjectName("textEdit_2")
+        font = QtGui.QFont()
+        font.setPointSize(25)
+
+        self.textEdit_2.setFont(font)
         self.verticalLayout_8.addWidget(self.textEdit_2)
         self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setContentsMargins(15, -1, 0, 60)
@@ -1859,7 +1866,7 @@ class UiMainWindow(object):
                                                             "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,                                     stop: 0 rgba(56, 102, 84, 180), stop: 1 rgba(56, 102, 84, 140));\n"
                                                             "}\n"
                                                             ""))
-        self.b_bandr.setText(_translate("MainWindow", "    Backup & Restore "))
+        self.b_bandr.setText(_translate("MainWindow", "    Backup && Restore"))
         self.b_generatenew.setText(_translate("MainWindow", "   New Password    "))
         self.tableWidget.setSortingEnabled(True)
         item = self.tableWidget.verticalHeaderItem(0)
