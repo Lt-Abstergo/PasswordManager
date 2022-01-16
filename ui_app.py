@@ -23,6 +23,9 @@ class ButtonWidgetRow(QtWidgets.QPushButton):
         self.setIcon(icon)
         self.setIconSize(QtCore.QSize(40, 40))
 
+    def get_rowid(self):
+        return self.rowID
+
 
 class UiMainWindow(object):
     def setupUi(self, MainWindow):

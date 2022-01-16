@@ -161,7 +161,7 @@ class MainWindow(QMainWindow):
         if not button:
             return
 
-        self.show_detail(button.rowID)
+        self.show_detail(button.get_rowid())
 
     def show_detail(self, rowid):
         self.ui.b_hid1.setChecked(False)
